@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+// Paquete que agrupa todos los mensajes y el servicio de este taller.
+// Debe coincidir con el "namespace estudiantes" usado en server.cpp y client.cpp.
+package estudiantes;
+
+// ============================================================
+// SERVICIO REMOTO (define los "métodos remotos" que el cliente
+// puede invocar sobre el servidor, como pide el enunciado)
+// ============================================================
+service EstudianteService {
+  // Servicio 1 - Nombre:
+  // El cliente envía el ID de un estudiante y el servidor retorna
+  // su nombre completo.
+  rpc GetNombre (IdRequest) returns (NombreResponse);
+
+  // Servicio 2 - Notas:
+  // El cliente envía el ID o el nombre de un estudiante y el servidor
+  // retorna el promedio de Taller 1 y Taller 2.
+  rpc GetNotas (ConsultaRequest) returns (NotasResponse);
+
+  // Servicio 3 - Grupo:
+  // El cliente envía el ID de un estudiante y el servidor retorna
+  // el grupo de trabajo al que pertenece.
+  rpc GetGrupo (IdRequest) returns (GrupoResponse);
+}
+
+// ------------------ Mensajes de petición (request) ------------------
+
+// Petición que solo necesita el ID del estudiante.
+// La usan GetNombre y GetGrupo.
+message IdRequest {
+  string id = 1;
+}
+
+// Petición para GetNotas: acepta ID o nombre en el mismo campo,
+// el servidor decide con cuál de los dos coincide.
+message ConsultaRequest {
+  string query = 1; // ID o nombre del estudiante
+}
+
+// ------------------ Mensajes de respuesta (response) ------------------
+
+// Respuesta de GetNombre.
+message NombreResponse {
+  string nombre = 1;
+}
+
+// Respuesta de GetNotas: promedio de taller1 y taller2.
+message NotasResponse {
+  float promedio = 1;
+}
+
+// Respuesta de GetGrupo.
+message GrupoResponse {
+  string grupo = 1;
+}
