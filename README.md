@@ -19,13 +19,12 @@ sobre datos de estudiantes de un curso, y un cliente que los invoca:
 
 ## 1. Requisitos
 
-Debes compilar en un entorno **Linux**, ya sea:
+Compilar en un entorno **Linux**, ya sea:
 
 - **WSL** (Windows Subsystem for Linux)
 - **Ubuntu** nativo
-- La **máquina virtual de la universidad**
 
-Instala las dependencias necesarias:
+Instalar las dependencias necesarias:
 
 ```bash
 sudo apt update
@@ -35,7 +34,7 @@ sudo apt install -y build-essential cmake git \
 
 ## 2. Compilar
 
-Desde la carpeta donde quieras guardar el taller:
+Desde la carpeta donde se quiera guardar el taller:
 
 ```bash
 git clone <url-del-repositorio>
@@ -49,7 +48,7 @@ make
 > La primera vez, `cmake ..` descarga y compila gRPC (vía `FetchContent`),
 > así que puede tardar varios minutos. Las siguientes veces será mucho más rápido.
 
-Al terminar tendrás dos ejecutables dentro de `build/`: `servidor` y `cliente`.
+Al terminar tendrás habra dos ejecutables dentro de `build/`: `servidor` y `cliente`.
 
 ## 3. Ejecutar en una sola computadora (prueba rápida)
 
@@ -82,51 +81,33 @@ Promedio de notas (334): 5
 Grupo para ID 334: G3
 ```
 
-Puedes probar con otros IDs editando `client.cpp` (o agregando tu propia
-llamada a `GetNombre`, `GetNotas` o `GetGrupo`) y recompilando con `make`.
-
-## 4. Ejecutar entre dos computadoras (como pide el taller)
+## 4. Ejecutar entre dos computadoras
 
 1. Ambas computadoras deben estar en la **misma red** (mismo WiFi/LAN).
-2. En la **computadora servidor**, averigua su IP local:
+2. En la **computadora servidor**, averiguar su IP local:
    ```bash
    ip addr show | grep "inet "
    ```
-   (busca algo como `192.168.1.50`)
-3. En la computadora servidor, corre:
+3. En la computadora servidor, correr:
    ```bash
    ./servidor
    ```
-4. Si hay firewall activo, abre el puerto 50051 (en Ubuntu con `ufw`):
+4. Si hay firewall activo, abrir el puerto 50051 (en Ubuntu con `ufw`):
    ```bash
    sudo ufw allow 50051/tcp
    ```
 5. En la **computadora cliente** (ya compilada con los mismos pasos del punto 2),
-   corre el cliente indicando la IP del servidor:
+   correr el cliente indicando la IP del servidor:
    ```bash
    ./cliente 192.168.1.50:50051
    ```
-6. Deberías ver la misma salida del punto 3, ahora obtenida desde el servidor remoto.
+6. Misma salida pero ahora desde el servidor remoto.
 
-Esta es la prueba que deben grabar en el video de entrega: mostrar el servidor
-corriendo en una máquina y el cliente, en otra máquina, invocando los tres
-servicios y recibiendo respuesta.
 
-## 5. Solución de problemas comunes
-
-| Problema | Causa probable | Solución |
-|---|---|---|
-| `Error: failed to connect to all addresses` | El servidor no está corriendo, o la IP/puerto está mal | Verifica que `./servidor` esté activo y que uses la IP correcta |
-| El cliente no conecta entre dos PCs | Firewall bloqueando el puerto 50051 | Abre el puerto con `ufw` o el firewall que uses |
-| `cmake ..` falla descargando gRPC | Sin conexión a internet o repo bloqueado | Verifica tu conexión; puede tardar, ten paciencia la primera vez |
-| `Estudiante no encontrado` | El ID/nombre no existe en la base de datos de `server.cpp` | Revisa los IDs cargados en el constructor de `EstudianteServiceImpl` |
-
-## 6. Notas de diseño
+## 5. Notas de diseño
 
 - La "base de datos" es un `std::map<std::string, Estudiante>` en memoria,
   cargado con datos de ejemplo en el constructor del servidor.
 - El servidor escucha en `0.0.0.0:50051`, es decir, en todas las interfaces
   de red del equipo, por eso puede recibir conexiones desde otra computadora.
-- Se usan credenciales inseguras (`InsecureChannelCredentials` /
-  `InsecureServerCredentials`), sin TLS, adecuado para un entorno académico
-  en red local, no para producción.
+
